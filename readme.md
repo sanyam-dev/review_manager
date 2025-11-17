@@ -1,7 +1,6 @@
 # TODOs
 - switch to client-server db connection
 - improve error handling
-- semantic search
 - embedding functionality	
 	- test different embedding models
 - creating graphs based on analysis
@@ -28,3 +27,5 @@
 - Model used:
 	`all-mpnet-base-v2`
 	- reasons: Free, no limit, runs locally
+
+- Semantic Search Enabled

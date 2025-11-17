@@ -15,6 +15,7 @@ db_client = chromadb.PersistentClient(DB_PATH)
 embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
     model_name="all-mpnet-base-v2"  # Better quality, 768 dimensions
 )
+# embedding_fn = embedding_functions.DefaultEmbeddingFunction()
 reviews_collection = db_client.get_or_create_collection(
     name="reviews",
     embedding_function=embedding_fn
@@ -42,12 +43,13 @@ def post_review(payload: list[Review]):
 		valid_rev = [r for r in payload if r.text is not None and r.id is not None]
 		if not valid_rev:
 			raise HTTPException(status_code=400, detail="No valid reviews to add")
-
+		
+		
 		
 		reviews_collection.add(
 			documents=[r.text for r in valid_rev],
-			#  TODO: get your own embedding function working 
-			embeddings=embedding_fn,
+			#  TODO: understand client side embedding
+			# embeddings=embedding_fn,
 			ids=[str(r.id) for r in valid_rev],
 			metadatas=[{
 				"location": r.location or None,
@@ -88,23 +90,27 @@ def db_check():
 
 @app.get("/get_reviews")
 def get_reviews(
-	limit: int,
-	offset:int
-	) -> JSONResponse:
+		limit: int,
+		offset: int
+) -> JSONResponse:
 	try:
-		res = reviews_collection.get(limit=limit, offset=offset)
-		return JSONResponse(
-			status_code=200,
-			content={"status" : "ok", "body" : res}
-		)
+			#TODO: add error handling for timeouts
+			res = reviews_collection.get(
+					limit=limit, 
+					offset=offset, 
+					# include=["documents", "metadatas", "embeddings"]
+			)
+
+			return JSONResponse(
+					status_code=200,
+					content={"status": "ok", "body": res}
+			)
 	except Exception as e:
-		return JSONResponse(
-			status_code=500,
-			content={
-				"status": "error", 
-				"detail": str(e)
-			}
-		)
+			return JSONResponse(
+					status_code=500,
+					content={"status": "error", "detail": str(e)}
+			)
+	
 @app.delete("/reviews/{review_id}")
 def delete_review(review_id: str):
     """Delete a single review by ID."""
@@ -145,6 +151,29 @@ def drop_collection():
         return {"status": "ok", "detail": "Collection dropped and recreated"}
     except Exception as e:
         return JSONResponse(
+            status_code=500,
+            content={"status": "error", "detail": str(e)}
+        )
+
+@app.get("/search")
+def search(query:str | None, n_responses: int | None) -> JSONResponse:
+	"""enables semantic search"""
+	try:
+		query_list = [q.strip() for q in query.split(',')]
+		res = reviews_collection.query(
+			query_texts=query_list,
+			n_results=n_responses
+		)
+		
+		return JSONResponse(
+			status_code=200,
+			content={
+				"status" : "ok",
+				"body" : res
+			}
+		)
+	except Exception as e:
+		return JSONResponse(
             status_code=500,
             content={"status": "error", "detail": str(e)}
         )

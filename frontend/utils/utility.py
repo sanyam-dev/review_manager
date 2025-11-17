@@ -80,3 +80,20 @@ class Utility:
 				return {"status": "error", "status_code": e.response.status_code, "detail": e.response.text}
 			except httpx.RequestError as e:
 				return {"status": "error", "detail": str(e)}
+	
+	
+	@staticmethod
+	def search(query: str | None, n_responses : int | None = 10) -> json:
+		with httpx.Client() as client:
+			url = f"{DEV_URL}/search"
+			try:
+				res = client.get(url, params={
+					"query" : query, 
+					"n_responses" : n_responses
+				})
+				res.raise_for_status()
+				return res.json()
+			except httpx.HTTPStatusError as e:
+				return {"status": "error", "status_code": e.response.status_code, "detail": e.response.text}
+			except httpx.RequestError as e:
+				return {"status": "error", "detail": str(e)}
