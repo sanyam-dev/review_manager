@@ -75,9 +75,10 @@ def db_check():
 @app.get("/get_reviews/")
 def get_reviews(n: int = 5):
 	try:
-		result = reviews_collection.get(limit = n)
-		return {"status" : "ok", "records" : result}
+		response = reviews_collection.get(limit = n)
+		return {"status" : "ok", "records" : response}
 	except Exception as e:
+		print(response)
 		return JSONResponse(
 			status_code=500,
 			content={"status":"error", "detail":str(e)}
