@@ -27,7 +27,6 @@ def helper_search_query(search_query: str | None) -> tuple:
     results: json = Utility.search(search_query)
     try:
         body = results["body"]
-        
         data = df({
             "ids": body["ids"][0],  # Flatten from [['1', '13', ...]] to ['1', '13', ...]
             "documents": body["documents"][0],
@@ -50,20 +49,19 @@ st.header("Browse and Search")
 # Capture search input
 search_query = st.text_input(label="Enter search text here", placeholder="e.g., cold food, slow service...")
 if search_query:
-	st.write(search_query)
 	with st.spinner("Searching..."):
 		search_results, error = helper_search_query(search_query)
 		if error:
 				st.error(f"❌ Search error: {error}")
 		else:
-				st.subheader(f"Search Results for: '{search_query}'")
+				st.write(f"Search Results for: '{search_query}'")
 				st.dataframe(search_results, width='stretch', hide_index=True)
-				
-st.write("Response:")
-if df_shape is not None or (0,0):
-	st.dataframe(get_review_res, width='stretch', hide_index=True)
 else:
-	st.error(f"❌ Error: {str(get_review_res)}")
+	st.write("Response:")
+	if df_shape is not None or (0,0):
+		st.dataframe(get_review_res, width='stretch', hide_index=True)
+	else:
+		st.error(f"❌ Error: {str(get_review_res)}")
 
 st.markdown("----------")
 
