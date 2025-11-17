@@ -12,8 +12,9 @@ DB_PATH = os.getenv("DB_PATH")
 
 app = FastAPI()
 db_client = chromadb.PersistentClient(DB_PATH)
-embedding_fn = embedding_functions.DefaultEmbeddingFunction()
-
+embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-mpnet-base-v2"  # Better quality, 768 dimensions
+)
 reviews_collection = db_client.get_or_create_collection(
     name="reviews",
     embedding_function=embedding_fn
@@ -45,7 +46,8 @@ def post_review(payload: list[Review]):
 		
 		reviews_collection.add(
 			documents=[r.text for r in valid_rev],
-			# embeddings=embedding_fn, TODO: get your own embedding function working 
+			#  TODO: get your own embedding function working 
+			embeddings=embedding_fn,
 			ids=[str(r.id) for r in valid_rev],
 			metadatas=[{
 				"location": r.location or None,
@@ -103,3 +105,46 @@ def get_reviews(
 				"detail": str(e)
 			}
 		)
+@app.delete("/reviews/{review_id}")
+def delete_review(review_id: str):
+    """Delete a single review by ID."""
+    try:
+        reviews_collection.delete(ids=[review_id])
+        return {"status": "ok", "detail": f"Review {review_id} deleted"}
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "detail": str(e)}
+        )
+
+
+@app.delete("/reviews")
+def delete_reviews(ids: list[str]):
+    """Delete multiple reviews by IDs."""
+    try:
+        reviews_collection.delete(ids=ids)
+        return {"status": "ok", "detail": f"Deleted {len(ids)} reviews"}
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "detail": str(e)}
+        )
+
+
+@app.delete("/collection")
+def drop_collection():
+    """Drop the entire collection (use with caution)."""
+    try:
+        db_client.delete_collection("reviews")
+        # Recreate empty collection
+        global reviews_collection
+        reviews_collection = db_client.get_or_create_collection(
+            name="reviews",
+            embedding_function=embedding_fn
+        )
+        return {"status": "ok", "detail": "Collection dropped and recreated"}
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "detail": str(e)}
+        )
