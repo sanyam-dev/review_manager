@@ -72,4 +72,13 @@ def db_check():
 			content={"status": "error", "detail": str(e)}
 		)
 
-
+@app.get("/get_reviews/")
+def get_reviews(n: int = 5):
+	try:
+		result = reviews_collection.get(limit = n)
+		return {"status" : "ok", "records" : result}
+	except Exception as e:
+		return JSONResponse(
+			status_code=500,
+			content={"status":"error", "detail":str(e)}
+		)
