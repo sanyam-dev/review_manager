@@ -1,0 +1,72 @@
+[
+  {
+    "id": 101,
+    "location": "Austin",
+    "rating": 5,
+    "text": "Exceptional service and delicious food. Highly recommend!",
+    "date": "2025-09-21"
+  },
+  {
+    "id": 102,
+    "location": "Denver",
+    "rating": 2,
+    "text": "Food was bland and the wait was too long.",
+    "date": "2025-09-22"
+  },
+  {
+    "id": 103,
+    "location": "Portland",
+    "rating": 4,
+    "text": "Loved the vegan options and cozy atmosphere.",
+    "date": "2025-09-23"
+  },
+  {
+    "id": 104,
+    "location": "San Diego",
+    "rating": 3,
+    "text": "Average experience, nothing stood out.",
+    "date": "2025-09-24"
+  },
+  {
+    "id": 105,
+    "location": "Phoenix",
+    "rating": 1,
+    "text": "Terrible service, will not return.",
+    "date": "2025-09-25"
+  },
+  {
+    "id": 106,
+    "location": "Philadelphia",
+    "rating": 5,
+    "text": "Amazing desserts and friendly staff!",
+    "date": "2025-09-26"
+  },
+  {
+    "id": 107,
+    "location": "Detroit",
+    "rating": 2,
+    "text": "The place was too noisy and crowded.",
+    "date": "2025-09-27"
+  },
+  {
+    "id": 108,
+    "location": "Minneapolis",
+    "rating": 4,
+    "text": "Great ambiance and quick service.",
+    "date": "2025-09-28"
+  },
+  {
+    "id": 109,
+    "location": "Orlando",
+    "rating": 3,
+    "text": "Good food but a bit overpriced.",
+    "date": "2025-09-29"
+  },
+  {
+    "id": 110,
+    "location": "San Jose",
+    "rating": 5,
+    "text": "Best pizza in town! Will visit again.",
+    "date": "2025-09-30"
+  }
+]

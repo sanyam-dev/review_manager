@@ -1,0 +1,129 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+ENV/
+env/
+.env/
+.venv/
+
+# Conda environment
+.conda/
+conda-env/
+
+# Pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# VS Code
+.vscode/
+.vscode/*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Icon must end with two \\r
+Icon
+
+# Files that might appear in the root of a volume
+.Spotlight-V100
+.Trashes
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+*.db
+
+# Environment variables and secrets
+.env
+.env.*
+.envrc
+.secrets
+.streamlit/secrets.toml
+
+# PyCharm
+.idea/
+
+# node modules (in case frontend uses node)
+node_modules/
+
+# ChromaDB / local DB folders
+db/
+*/db/
+chroma.sqlite3
+*.sqlite
+*.sqlite3
+
+# Ignore generated documentation
+docs/_build/
+
+# Ignore coverage and pytest cache
+.pytest_cache/
+
+# Editors
+*.swp
+*~
+
+# Ignore compiled C files
+*.c
+
+# Temporary files
+tmp/
+
+# OS generated files
+Thumbs.db
+
+# Add project-specific ignores
+# /backend/__pycache__/
+# /frontend/__pycache__/
