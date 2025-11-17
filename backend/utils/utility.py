@@ -1,9 +1,5 @@
 import httpx
-from streamlit.runtime.uploaded_file_manager import UploadedFile
-import json
 from chromadb import Collection
-
-# /Users/ashu/projects/python/review_manager/frontend/utils/utility.py
 
 class Utility:
 	@staticmethod
