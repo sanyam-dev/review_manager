@@ -1,12 +1,14 @@
 from fastapi import FastAPI, HTTPException
 from backend.schema import Review
 import chromadb
+import os
+from dotenv import load_dotenv
 from chromadb.utils import embedding_functions
 from fastapi.responses import JSONResponse
-from utils.utility import Utility
 
 #env variable
-DB_PATH = "../db/reviews"
+load_dotenv()
+DB_PATH = os.getenv("DB_PATH")
 
 app = FastAPI()
 db_client = chromadb.PersistentClient(DB_PATH)
@@ -24,7 +26,7 @@ async def root():
 
 
 @app.post("/ingest")
-async def post_review(payload: list[Review]):
+def post_review(payload: list[Review]):
 	"""
 	Ingests a list of Review objects into the database.
 
@@ -40,16 +42,22 @@ async def post_review(payload: list[Review]):
 		if not valid_rev:
 			raise HTTPException(status_code=400, detail="No valid reviews to add")
 
-		# Example: Add reviews to the collection (adjust as needed for your schema)
+		
 		reviews_collection.add(
 			documents=[r.text for r in valid_rev],
-			ids=[str(r.id) for r in valid_rev]
-		)
-		print("review added successfully")
-		return {"status_code" : 200, "detail" : "reviews added successfully"}
+			# embeddings=embedding_fn, TODO: get your own embedding function working 
+			ids=[str(r.id) for r in valid_rev],
+			metadatas=[{
+				"location": r.location or None,
+				"rating": r.rating or None,
+				"date": r.date or None
+			} for r in valid_rev],
+		)			
+		
+		return {"status" : 200, "detail" : "reviews added successfully"}
 	
 	except HTTPException as e:
-		return {'status_code' : e.status_code, 'detail' : e.detail}
+		return {'status' : e.status_code, 'detail' : e.detail}
 	
 	except Exception as e:
 		return JSONResponse(
@@ -65,21 +73,33 @@ async def health_check():
 def db_check():
 	try:
 		count = reviews_collection.count()
-		return {"status": "ok", "record_count": count}
+		body = reviews_collection.get(limit=5)
+		return JSONResponse(
+			status_code=200,
+			content = {"status": "ok", "record_count": count, "body" : body}
+		)
 	except Exception as e:
 		return JSONResponse(
 			status_code=500,
-			content={"status": "error", "detail": str(e)}
+			content={"status": "error", "detail": str(e), "body" : body}
 		)
 
-@app.get("/get_reviews/")
-def get_reviews(n: int = 5):
+@app.get("/get_reviews")
+def get_reviews(
+	limit: int,
+	offset:int
+	) -> JSONResponse:
 	try:
-		response = reviews_collection.get(limit = n)
-		return {"status" : "ok", "records" : response}
+		res = reviews_collection.get(limit=limit, offset=offset)
+		return JSONResponse(
+			status_code=200,
+			content={"status" : "ok", "body" : res}
+		)
 	except Exception as e:
-		print(response)
 		return JSONResponse(
 			status_code=500,
-			content={"status":"error", "detail":str(e)}
+			content={
+				"status": "error", 
+				"detail": str(e)
+			}
 		)
