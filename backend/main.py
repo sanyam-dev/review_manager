@@ -43,9 +43,7 @@ def post_review(payload: list[Review]):
 		valid_rev = [r for r in payload if r.text is not None and r.id is not None]
 		if not valid_rev:
 			raise HTTPException(status_code=400, detail="No valid reviews to add")
-		
-		
-		
+	
 		reviews_collection.add(
 			documents=[r.text for r in valid_rev],
 			#  TODO: understand client side embedding
