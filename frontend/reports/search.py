@@ -3,7 +3,6 @@ from utils.utility import Utility
 import json
 from pandas import DataFrame as df
 
-
 def helper_utility_check() -> json:
 	res : json = Utility.db_check()
 	return res
